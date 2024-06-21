@@ -1,28 +1,39 @@
 import dash
 from dash import html, dcc, Input, Output, State
 import trafilatura
+import dash_bootstrap_components as dbc
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server  # Nécessaire pour Gunicorn
 
-app.layout = html.Div([
-    html.H1("Scraper d'URL avec Trafilatura"),
-    dcc.Input(
-        id='url-input',
-        type='text',
-        placeholder='Entrez une URL à scraper',
-        style={'width': '100%', 'margin-bottom': '10px'}
-    ),
-    html.Button('Scraper', id='scrape-button', n_clicks=0),
-    html.Div(id='output-content', style={'whiteSpace': 'pre-wrap', 'marginTop': '20px'})
-])
+app.layout = dbc.Container([
+    html.H1("Scraper d'URL avec Trafilatura", className="my-4 text-center"),
+    dbc.Card([
+        dbc.CardBody([
+            dbc.Input(
+                id='url-input',
+                type='text',
+                placeholder='Entrez une URL à scraper',
+                className="mb-3"
+            ),
+            dbc.Button('Scraper', id='scrape-button', color="primary", className="mb-3 w-100"),
+            dbc.Spinner(
+                dbc.Card(
+                    dbc.CardBody(
+                        html.Div(id='output-content', style={'whiteSpace': 'pre-wrap'})
+                    ),
+                    className="mt-3"
+                ),
+                            ),
+        ])
+    ])
+], fluid=True, className="p-5")
 
 @app.callback(
     Output('output-content', 'children'),
     Input('scrape-button', 'n_clicks'),
     State('url-input', 'value'),
-    prevent_initial_call=True
-)
+    prevent_initial_call=True)
 def update_output(n_clicks, url):
     if url:
         try:
