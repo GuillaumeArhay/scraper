@@ -34,4 +34,4 @@ def update_output(n_clicks, url):
     return "Veuillez entrer une URL valide."
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', port=10000)
